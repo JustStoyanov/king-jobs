@@ -90,6 +90,16 @@ local changeJob = function(src, job, grade)
         player.set('job', jobData, true);
         return;
     end
+    -- Gang Prevention --
+    if not Config.Jobs[job].canBeInGang then
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = 'Notification',
+            description = 'You can\'t work this job if you are in a gang!',
+            duration = 5000,
+            type = 'error'
+        });
+        return;
+    end
     -- Grade Handling --
     if Config.Jobs[job].grades then
         if not grade then
@@ -109,6 +119,21 @@ local changeJob = function(src, job, grade)
         player.set('job', jobData, true);
     end
 end
+exports('ChangeJob', changeJob);
+
+---@param job string?
+---@param grade number?
+RegisterServerEvent('king-jobs:server:changeJob', function(job, grade)
+    ---@type number
+    ---@diagnostic disable-next-line: assign-type-mismatch
+    local src = source;
+    if not source then
+        return;
+    end if type(source) ~= 'number' then
+        return;
+    end
+    changeJob(src, job, grade);
+end);
 
 lib.addCommand('changejob', {
     help = 'Set someone\'s job',
@@ -158,6 +183,17 @@ local changeGang = function(src, gang, grade)
         player.set('gang', gangData, true);
         return;
     end
+    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
+    local job = player.get('job').name;
+    if not Config.Jobs[job].canBeInGang then
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = 'Notification',
+            description = 'You can\'t be in a gang with this job!',
+            duration = 5000,
+            type = 'error'
+        });
+        return;
+    end
     -- Grade Handling --
     if Config.Gangs[gang].grades then
         if not grade then
@@ -177,6 +213,21 @@ local changeGang = function(src, gang, grade)
         player.set('gang', gangData, true);
     end
 end
+exports('ChangeGang', changeGang);
+
+---@param gang string?
+---@param grade number?
+RegisterServerEvent('king-jobs:server:changeGang', function(gang, grade)
+    ---@type number
+    ---@diagnostic disable-next-line: assign-type-mismatch
+    local src = source;
+    if not source then
+        return;
+    end if type(source) ~= 'number' then
+        return;
+    end
+    changeGang(src, gang, grade);
+end);
 
 lib.addCommand('changegang', {
     help = 'Set someone\'s gang',

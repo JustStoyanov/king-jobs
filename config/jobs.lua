@@ -3,6 +3,7 @@ Config.Jobs = {
         label = 'Unemployed',
         gouverment = true,
         whitelist = true,
+        canBeInGang = true,
         grades = false,
         salary = 30
     },
@@ -11,6 +12,7 @@ Config.Jobs = {
         label = 'KCPD',
         gouverment = true,
         whitelist = true,
+        canBeInGang = false,
         grades = {
             [1] = {
                 label = 'Cadet',
