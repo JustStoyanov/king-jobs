@@ -1,63 +1,114 @@
+---@param job string
+---@param job_grade number
+---@return string
+local formateJobMSG = function(job, job_grade)
+    local msg = 'You are unemployed!';
+    if job and job ~= 'unemployed' then
+        local cfgJobs = Config.Jobs[job];
+        if not cfgJobs?.label then
+            goto skip
+        end
+        msg = 'You are working as: '..cfgJobs.label;
+        if job_grade then
+            if not cfgJobs?.grades?[job_grade]?.label then
+                goto skip
+            end
+            msg = msg..' - '..cfgJobs.grades[job_grade].label;
+        end
+    end
+    ::skip::
+    return msg;
+end
+
 lib.addCommand('myjob', {
     help = 'Check your jobs'
 }, function(src)
     local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
     ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
-    local rawJobData = player.get('job');
-    -- Message --
-    local data, message = Config.Jobs[rawJobData.name], nil;
-    local grade = rawJobData.grade;
-    message = data.label if grade then
-        message = message..' '..data.grades[rawJobData.grade].label;
+    local job, grade_id = player.get('job').name, player.get('job').grade;
+    local msg = formateJobMSG(job, grade_id);
+    TriggerClientEvent('ox_lib:notify', src, {
+        title = 'Notification',
+        description = msg,
+        duration = 5000,
+        type = 'info'
+    });
+end);
+
+---@param gang string
+---@param gang_grade number
+local formateGangMSG = function(gang, gang_grade)
+    local msg = 'You are not in a gang!';
+    if gang then
+        local cfgGangs = Config.Gangs[gang];
+        if not cfgGangs?.label then
+            goto skip
+        end
+        msg = msg..'\n\n Gang: '..cfgGangs.label;
+        if gang_grade then
+            if not cfgGangs?.grades?[gang_grade] then
+                goto skip
+            end
+            msg = msg..' - '..cfgGangs.grades[gang_grade];
+        end
     end
-    -- Notification --
-    local msg = 'You are working as: '..message;
-    if not message or message == 'Unemployed' then
-        msg = 'You are unemployed!';
-    end
-    klibrary.interface.notifySV(src, msg, 'info', 5000, 'Job Center');
+    ::skip::
+    return msg;
+end
+
+lib.addCommand('mygang', {
+    help = 'Check your gang'
+}, function(src)
+    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
+    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
+    local gang, gang_grade = player.get('gang').name, player.get('gang').grade;
+    local msg = formateGangMSG(gang, gang_grade);
+    TriggerClientEvent('ox_lib:notify', src, {
+        title = 'Notification',
+        description = msg,
+        duration = 5000,
+        type = 'info'
+    });
 end);
 
 ---@param src number
----@param job string
+---@param job string?
 ---@param grade number?
 local changeJob = function(src, job, grade)
     -- Bug Prevention --
     if not src then
         return;
-    end if not job then
-        job = 'unemployed';
+    end
+    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
+    if not job then
+        ---@type table
+        local jobData = {
+            name = 'unemployed',
+            grade = 0
+        };
+        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
+        player.set('job', jobData, true);
+        return;
     end
     -- Grade Handling --
-    if Config.Jobs?[job].grades then
+    if Config.Jobs[job].grades then
         if not grade then
-            grade = 1;
-        end
-        if not Config.Jobs[job].grades[grade] then
             grade = 1;
         end
     else
         grade = nil;
     end
     -- Job Changing --
-    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
-    if Config.Jobs[job] then
-        ---@diagnostic disable-next-line: param-type-mismatch
-        player.set('job', {
+    if job and src and player then
+        ---@type table
+        local jobData = {
             name = job,
             grade = grade
-        }, true);
-        -- Notification --
-        local msg = 'You are now working as: '..Config.Jobs[job].label;
-        if grade then
-            msg = msg..' '..Config.Jobs[job].grades[grade].label;
-        end
-        klibrary.interface.notifySV(src, msg, 'info', 5000, 'Job Center');
-    else
-        klibrary.interface.notifySV(src, 'This job does not exist!', 'error', 5000, 'Job Center');
+        };
+        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
+        player.set('job', jobData, true);
     end
 end
-RegisterNetEvent('king-jobsystem:server:changeJob', changeJob);
 
 lib.addCommand('changejob', {
     help = 'Set someone\'s job',
@@ -81,8 +132,75 @@ lib.addCommand('changejob', {
     },
     restricted = 'group.admin'
 }, function(src, args)
-    if not src or not args then
+    if not src then
         return;
     end
     changeJob(args.playerId, args.jobName, args.jobGrade)
+end);
+
+---@param src number
+---@param gang string?
+---@param grade number?
+local changeGang = function(src, gang, grade)
+    -- Bug Prevention --
+    if not src then
+        return;
+    end
+    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
+    if not gang then
+        ---@type table
+        local gangData = {
+            name = nil,
+            grade = 0
+        };
+        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
+        player.set('gang', gangData, true);
+        return;
+    end
+    -- Grade Handling --
+    if Config.Gangs[gang].grades then
+        if not grade then
+            grade = 1;
+        end
+    else
+        grade = nil;
+    end
+    -- Gang Changing --
+    if gang and src and player then
+        ---@type table
+        local gangData = {
+            name = gang,
+            grade = grade
+        };
+        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
+        player.set('gang', gangData, true);
+    end
+end
+
+lib.addCommand('changegang', {
+    help = 'Set someone\'s gang',
+    params = {
+        {
+            name = 'playerId',
+            help = 'The player\'s server ID',
+            type = 'number'
+        },
+        {
+            name = 'gangName',
+            help = 'The gang name',
+            type = 'string'
+        },
+        {
+            name = 'gangGrade',
+            help = 'The gang grade',
+            type = 'number',
+            optional = true
+        }
+    },
+    restricted = 'group.admin'
+}, function(src, args)
+    if not src then
+        return;
+    end
+    changeGang(args.playerId, args.gangName, args.gangGrade)
 end);
