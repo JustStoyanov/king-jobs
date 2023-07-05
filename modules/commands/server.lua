@@ -44,7 +44,7 @@ local formateGangMSG = function(gang, gang_grade)
         if not cfgGangs?.label then
             goto skip
         end
-        msg = msg..'\n\n Gang: '..cfgGangs.label;
+        msg = 'Gang: '..cfgGangs.label;
         if gang_grade then
             if not cfgGangs?.grades?[gang_grade] then
                 goto skip
@@ -121,7 +121,8 @@ lib.addCommand('changejob', {
         {
             name = 'jobName',
             help = 'The job name',
-            type = 'string'
+            type = 'string',
+            optional = true
         },
         {
             name = 'jobGrade',
@@ -188,7 +189,8 @@ lib.addCommand('changegang', {
         {
             name = 'gangName',
             help = 'The gang name',
-            type = 'string'
+            type = 'string',
+            optional = true
         },
         {
             name = 'gangGrade',

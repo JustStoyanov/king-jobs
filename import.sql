@@ -5,5 +5,6 @@ CREATE TABLE `character_jobs` (
     `job_grade` int(10) DEFAULT 0,
     `gang` longtext DEFAULT NULL,
     `gang_grade` int(10) DEFAULT 0,
+    `salary` int(10) DEFAULT 0,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
