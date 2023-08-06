@@ -1,17 +1,39 @@
+---@param ped number
+local playGetMoneyAnimation = function(ped)
+    -- Bug Prevention --
+    if not ped then
+        return;
+    end
+    -- Animation --
+    local dict, anim = 'mp_common', 'givetake1_a';
+    lib.requestAnimDict(dict);
+    TaskPlayAnim(ped, dict, anim, 8.0, 8.0, -1, 0, 0, false, false, false);
+    Wait(500);
+    -- Prop --
+    local hash = GetHashKey('prop_anim_cash_pile_01');
+    local x, y, z = table.unpack(GetEntityCoords(ped));
+    ---@diagnostic disable-next-line: param-type-mismatch
+    local prop = CreateObject(hash, x, y, z, false, true, true);
+    AttachEntityToEntity(prop, ped, GetPedBoneIndex(ped, 28422), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true);
+    Wait(1000);
+    ClearPedTasks(ped);
+    DeleteObject(prop);
+end
+
+local bankerPeds = {};
 ---@param data table
----@return number?
 local spawnPed = function(data)
     local model, loc = GetHashKey(data.model), data.location;
     local x, y, z, w in loc;
     lib.requestModel(model);
-    local ped = CreatePed(4, model, x, y, z - 1, w, true, true);
+    local ped = CreatePed(4, model, x, y, z - 1, w, false, true);
     SetBlockingOfNonTemporaryEvents(ped, true);
     SetPedDiesWhenInjured(ped, false);
     SetPedCanPlayAmbientAnims(ped, true);
     SetPedCanRagdollFromPlayerImpact(ped, false);
     SetEntityInvincible(ped, true);
     FreezeEntityPosition(ped, true);
-    return ped;
+    bankerPeds[#bankerPeds + 1] = ped;
 end
 
 ---@param data table
@@ -127,6 +149,7 @@ CreateThread(function()
                     end
                     -- Give Money --
                     TriggerServerEvent('king-jobs:server:setSalary', salary - amount);
+                    playGetMoneyAnimation(cache.ped);
                     lib.notify({
                         title = 'Bank',
                         description = ('You have withdrawn $%s from your salary!'):format(amount),
@@ -153,6 +176,7 @@ CreateThread(function()
                             return;
                         end
                         TriggerServerEvent('king-jobs:server:setSalary', 0);
+                        playGetMoneyAnimation(cache.ped);
                         lib.notify({
                             title = 'Bank',
                             description = ('You have withdrawn $%s from your salary!'):format(salary),
@@ -166,4 +190,13 @@ CreateThread(function()
             }
         }
     });
+end);
+
+---@param rsc string
+AddEventHandler('onResourceStop', function(rsc)
+    if rsc == 'king-jobs' then
+        for i = 1, #bankerPeds do
+            DeleteEntity(bankerPeds[i]);
+        end
+    end
 end);

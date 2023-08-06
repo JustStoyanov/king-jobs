@@ -6,22 +6,22 @@ local formateJobMSG = function(job, job_grade)
     if job and job ~= 'unemployed' then
         local cfgJobs = Config.Jobs[job];
         if not cfgJobs?.label then
-            goto skip
+            return msg;
         end
         msg = 'You are working as: '..cfgJobs.label;
         if job_grade then
             if not cfgJobs?.grades?[job_grade]?.label then
-                goto skip
+                return msg;
             end
             msg = msg..' - '..cfgJobs.grades[job_grade].label;
         end
     end
-    ::skip::
     return msg;
 end
 
 lib.addCommand('myjob', {
-    help = 'Check your jobs'
+    help = 'Check your jobs',
+    params = {}
 }, function(src)
     local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
     ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
@@ -57,7 +57,8 @@ local formateGangMSG = function(gang, gang_grade)
 end
 
 lib.addCommand('mygang', {
-    help = 'Check your gang'
+    help = 'Check your gang',
+    params = {}
 }, function(src)
     local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
     ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
@@ -91,14 +92,17 @@ local changeJob = function(src, job, grade)
         return;
     end
     -- Gang Prevention --
-    if not Config.Jobs[job].canBeInGang then
-        TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Notification',
-            description = 'You can\'t work this job if you are in a gang!',
-            duration = 5000,
-            type = 'error'
-        });
-        return;
+    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
+    if player.get('gang').name then
+        if not Config.Jobs[job].metadata.canBeInGang then
+            TriggerClientEvent('ox_lib:notify', src, {
+                title = 'Notification',
+                description = 'You can\'t work this job if you are in a gang!',
+                duration = 5000,
+                type = 'error'
+            });
+            return;
+        end
     end
     -- Grade Handling --
     if Config.Jobs[job].grades then
@@ -185,7 +189,7 @@ local changeGang = function(src, gang, grade)
     end
     ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
     local job = player.get('job').name;
-    if not Config.Jobs[job].canBeInGang then
+    if not Config.Jobs[job].metadata.canBeInGang then
         TriggerClientEvent('ox_lib:notify', src, {
             title = 'Notification',
             description = 'You can\'t be in a gang with this job!',

@@ -1,4 +1,28 @@
 ---@param src number
+---@param palyerId number
+---@return table?
+lib.callback.register('king-jobs:server:getPlayerJob', function(src, palyerId)
+    ---@type table
+    local player = Ox.GetPlayer(palyerId or src); --[[@as OxPlayer]]
+    if not player then
+        return nil;
+    end
+    return player.get('job');
+end);
+
+---@param src number
+---@param palyerId number
+---@return table?
+lib.callback.register('king-jobs:server:getPlayerGang', function(src, palyerId)
+    ---@type table
+    local player = Ox.GetPlayer(palyerId or src); --[[@as OxPlayer]]
+    if not player then
+        return nil;
+    end
+    return player.get('gang');
+end);
+
+---@param src number
 ---@param charid number
 ---@return nil
 AddEventHandler('ox:playerLoaded', function(src, _, charid)
@@ -42,14 +66,29 @@ AddEventHandler('ox:playerLogout', function(src, _, charid)
         charid
     }, function(data)
         local elsE = function()
-            local rows = '`charid`, `job`, `job_grade`, `gang`, `gang_grade`';
-            MySQL.insert('INSERT INTO `character_jobs` ('..rows..') VALUES (?, ?, ?, ?, ?)', {
+            MySQL.insert([[
+                INSERT INTO `character_jobs` (
+                    `charid`,
+                    `job`,
+                    `job_grade`,
+                    `gang`,
+                    `gang_grade`
+                ) VALUES (?, ?, ?, ?, ?)
+            ]], {
                 charid, job.name, job.grade, gang.name, gang.grade
             });
-        end if data then
+        end
+
+        if data then
             if data[1] then
-                local rows = '`job` = ?, `job_grade` = ?, `gang` = ?, `gang_grade` = ?';
-                MySQL.update('UPDATE `character_jobs` SET '..rows..' WHERE `charid` = ?', {
+                MySQL.update([[
+                    UPDATE `character_jobs` SET
+                    `job` = ?,
+                    `job_grade` = ?,
+                    `gang` = ?,
+                    `gang_grade` = ?
+                    WHERE `charid` = ?
+                ]], {
                     job.name, job.grade, gang.name, gang.grade, charid
                 });
             else

@@ -5,6 +5,15 @@ Config = {};
 Config.SalaryReceiveTime = 30; -- In minutes
 Config.SalaryPeds = {
     [1] = {
+        ped = {
+            model = 'a_m_m_hasjew_01',
+            location = vec4(247.44, 210.08, 106.28, 340.00)
+        }, pedZone = true
+    }
+};
+
+--[[
+    [1] = {
         peds =  { -- Multiple peds - Single Zone
             [1] = {
                 model = 'a_m_m_hasjew_01',
@@ -17,7 +26,9 @@ Config.SalaryPeds = {
             location = vec3(242.41, 225.60, 107.61),
             heading = 340.00, size = vec3(8, 4, 3)
         }
-    }, [2] = { -- Single ped - Multiple Zones
+    },
+    
+    [2] = { -- Single ped - Multiple Zones
         ped = {
             model = 'a_m_m_hasjew_01',
             location = vec4(247.86, 224.69, 106.28, 161.39)
@@ -30,10 +41,12 @@ Config.SalaryPeds = {
                 heading = 340.00, size = vec3(4, 4, 3)
             }
         }
-    }, [3] = { -- Single ped - Single Zone
+    },
+    
+    [3] = { -- Single ped - Single Zone
         ped = {
             model = 'a_m_m_hasjew_01',
             location = vec4(247.44, 210.08, 106.28, 340.00)
         }, pedZone = true
     }
-};
+]]--

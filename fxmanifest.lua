@@ -4,7 +4,7 @@ lua54 'yes';
 
 author 'gadget2';
 description 'Job system for FiveM [ox_core]';
-version '1.0.1';
+version '1.0.2';
 
 client_scripts {
     '@ox_core/imports/client.lua',
@@ -29,3 +29,4 @@ shared_scripts {
     'config/jobs.lua',
     'config/gangs.lua'
 };
+provides {'mst-experience'};

@@ -12,7 +12,7 @@ RegisterServerEvent('king-jobs:server:setSalary', setSalary);
 
 ---@param src number
 ---@return number?
-lib.callback.register('king-jobs:server:getSalary', function(src)
+local getSalary = function(src)
     local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
     local charid = player.charid;
     local query = 'SELECT `salary` FROM `character_jobs` WHERE `charid` = ?';
@@ -21,9 +21,32 @@ lib.callback.register('king-jobs:server:getSalary', function(src)
         return;
     end
     return data[1].salary;
-end);
+end
+exports('GetSalary', getSalary);
+lib.callback.register('king-jobs:server:getSalary', getSalary);
 
 ---@param amount number
 RegisterServerEvent('king-jobs:server:addMoneyItem', function(amount)
     exports['ox_inventory']:AddItem(source, 'cash', amount);
+end);
+
+lib.addCommand('setsalary',  {
+    help = 'Add money to your salary.',
+    params = {
+        {
+            name = 'playerId',
+            help = 'The player id.',
+            type = 'playerId'
+        },
+        {
+            name = 'amount',
+            help = 'The amount of money to add.',
+            type = 'number'
+        }
+    },
+    restricted = 'group.admin'
+}, function(_, args)
+    local player = Ox.GetPlayer(args.playerId);
+    local charid = player.charid;
+    setSalary(args.amount, charid);
 end);
