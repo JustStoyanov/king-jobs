@@ -121,6 +121,7 @@ local changeJob = function(src, job, grade)
         };
         ---@diagnostic disable-next-line: unused-function, param-type-mismatch
         player.set('job', jobData, true);
+        TriggerClientEvent('king-jobs:jobUpdate', src, job, grade);
     end
 end
 exports('ChangeJob', changeJob);
@@ -215,6 +216,7 @@ local changeGang = function(src, gang, grade)
         };
         ---@diagnostic disable-next-line: unused-function, param-type-mismatch
         player.set('gang', gangData, true);
+        TriggerClientEvent('king-jobs:gangUpdate', src, gang, grade);
     end
 end
 exports('ChangeGang', changeGang);

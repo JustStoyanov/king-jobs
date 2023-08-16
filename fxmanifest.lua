@@ -4,7 +4,7 @@ lua54 'yes';
 
 author 'gadget2';
 description 'Job system for FiveM [ox_core]';
-version '1.0.2';
+version '1.0.3';
 
 client_scripts {
     '@ox_core/imports/client.lua',
