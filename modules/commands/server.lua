@@ -84,7 +84,7 @@ local changeJob = function(src, job, grade)
     if not job then
         ---@type table
         local jobData = {
-            name = 'unemployed',
+            name = Config.Unemployed,
             grade = 0
         };
         ---@diagnostic disable-next-line: unused-function, param-type-mismatch
@@ -105,7 +105,7 @@ local changeJob = function(src, job, grade)
         end
     end
     -- Grade Handling --
-    if Config.Jobs[job].grades then
+    if Config.Jobs?[job]?.grades then
         if not grade then
             grade = 1;
         end

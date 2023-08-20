@@ -20,22 +20,6 @@ local playGetMoneyAnimation = function(ped)
     DeleteObject(prop);
 end
 
-local bankerPeds = {};
----@param data table
-local spawnPed = function(data)
-    local model, loc = GetHashKey(data.model), data.location;
-    local x, y, z, w in loc;
-    lib.requestModel(model);
-    local ped = CreatePed(4, model, x, y, z - 1, w, false, true);
-    SetBlockingOfNonTemporaryEvents(ped, true);
-    SetPedDiesWhenInjured(ped, false);
-    SetPedCanPlayAmbientAnims(ped, true);
-    SetPedCanRagdollFromPlayerImpact(ped, false);
-    SetEntityInvincible(ped, true);
-    FreezeEntityPosition(ped, true);
-    bankerPeds[#bankerPeds + 1] = ped;
-end
-
 ---@param data table
 local createTarget = function(data)
     exports['ox_target']:addBoxZone({
@@ -62,10 +46,18 @@ CreateThread(function()
         local pedData = Config.SalaryPeds[i];
         -- Ped Handling --
         if pedData.ped then
-            spawnPed(pedData.ped);
+            mlib.ped({
+                coords = pedData.ped.location,
+                rotation = pedData.ped.heading,
+                model = pedData.ped.model
+            });
         end if pedData.peds then
             for j = 1, #pedData.peds do
-                spawnPed(pedData.peds[j]);
+                mlib.ped({
+                    coords = pedData.peds[j].location,
+                    rotation = pedData.peds[j].heading,
+                    model = pedData.peds[j].model
+                });
             end
         end
         -- Zone Handling --
@@ -190,13 +182,4 @@ CreateThread(function()
             }
         }
     });
-end);
-
----@param rsc string
-AddEventHandler('onResourceStop', function(rsc)
-    if rsc == 'king-jobs' then
-        for i = 1, #bankerPeds do
-            DeleteEntity(bankerPeds[i]);
-        end
-    end
 end);

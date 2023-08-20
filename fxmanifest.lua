@@ -23,6 +23,7 @@ server_scripts {
 
 shared_scripts {
     '@ox_lib/init.lua',
+    '@mst-lib/import.lua',
 
     'core/shared.lua',
     'config/config.lua',
