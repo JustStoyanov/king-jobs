@@ -1,37 +1,21 @@
--- Jobs --
+local arr = {'Job', 'Gang'};
+for i = 1, #arr do
+    local value = arr[i];
 
----@return table
-exports('getJobs', function()
-    return Config.Jobs;
-end);
+    ---@return table
+    exports(('get%ss'):format(value), function()
+        return Config[('%ss'):format(value)];
+    end);
 
----@param job string
----@return table
-exports('getJob', function(job)
-    return Config.Jobs[job:lower()];
-end);
+    ---@param key string
+    ---@return table
+    exports(('get%s'):format(value), function(key)
+        return Config[value][key:lower()];
+    end);
 
----@param job string
----@return string
-exports('getJobLabel', function(job)
-    return Config.Jobs[job:lower()].label;
-end);
-
--- Gangs --
-
----@return table
-exports('getGangs', function()
-    return Config.Gangs;
-end);
-
----@param gang string
----@return table
-exports('getGang', function(gang)
-    return Config.Gangs[gang:lower()];
-end);
-
----@param gang string
----@return string
-exports('getGangLabel', function(gang)
-    return Config.Gangs[gang:lower()].label;
-end);
+    ---@param key string
+    ---@return string
+    exports(('get%sLabel'):format(value), function(key)
+        return Config[value][key:lower()].label;
+    end);
+end
