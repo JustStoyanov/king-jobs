@@ -3,6 +3,18 @@
 
 # Config
 
+- Job Creation
+
+        ['jobName'] = {
+            label = 'Job Label',
+            metadata = {
+                government = true,
+                canBeInGang = true
+            },
+            grades = false,
+            salary = 30
+        }
+
 - Salary Peds
     
     - This is an example for a single zone and multiple peds
@@ -53,15 +65,3 @@
                 },
                 pedZone = true
             }
-
-- Job Creation
-
-        ['jobName'] = {
-            label = 'Job Label',
-            metadata = {
-                government = true,
-                canBeInGang = true
-            },
-            grades = false,
-            salary = 30
-        }

@@ -1,3 +1,8 @@
+---@return string
+exports('getUnemployedName', function()
+    return Config.Unemployed;
+end);
+
 local arr = {'Job', 'Gang'};
 for i = 1, #arr do
     local value = arr[i];

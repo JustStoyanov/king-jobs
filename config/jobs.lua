@@ -1,33 +1,20 @@
---[[
-    ['jobName'] = { -- This is what you type when you use /changejob
-        label = 'Job Label', -- This is what you see when you use /myjob
-        metadata = {
-            government = true, -- true - the government can control the job (it's not owned business)
-            canBeInGang = true, -- true - the player can be in a gang at the same time
-        },
-        grades = false, -- false - no grades | table - the grades
-        salary = 30 -- if there is no grades you add the salary here
-    }
-]]--
-
---TODO
-Config.Unemployed = {
-    name = 'unemployed',
-    label = 'Unemployed',
-    metadata = {
-        government = true,
-        canBeInGang = true,
-    },
-    grades = false,
-    salary = 30
-};
-
+Config.Unemployed = 'unemployed';
 Config.Jobs = {
+    ['unemployed'] = {
+        label = 'Unemployed',
+        metadata = {
+            government = true,
+            canBeInGang = true
+        },
+        grades = false,
+        salary = 30
+    },
+
     ['kcmd'] = {
         label = 'KCMD',
         metadata = {
             government = true,
-            canBeInGang = true,
+            canBeInGang = true
         },
 
         grades = {
@@ -55,7 +42,7 @@ Config.Jobs = {
         label = 'KCPD',
         metadata = {
             government = true,
-            canBeInGang = false,
+            canBeInGang = false
         },
 
         grades = {
