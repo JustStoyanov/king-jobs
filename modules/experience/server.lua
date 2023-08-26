@@ -10,7 +10,7 @@ lib.callback.register('king-jobs:server:getJobXP', function(src, job, charId)
     if not charId then
         local player = Ox.GetPlayer(src);
         if player then
-            charId = player.charid;
+            charId = player.charId;
         end
     end
     -- Experience Getting --
@@ -32,7 +32,7 @@ RegisterServerEvent('king-jobs:server:setJobXP', function(job, xp, charId)
     if not charId then
         local player = Ox.GetPlayer(source);
         if player then
-            charId = player.charid;
+            charId = player.charId;
         end
     end
     -- Experience Adding --

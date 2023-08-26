@@ -2,8 +2,7 @@
 ---@param palyerId number
 ---@return table?
 lib.callback.register('king-jobs:server:getPlayerJob', function(src, palyerId)
-    ---@type table
-    local player = Ox.GetPlayer(palyerId or src); --[[@as OxPlayer]]
+    local player = Ox.GetPlayer(palyerId or src);
     if not player then
         return nil;
     end
@@ -14,8 +13,7 @@ end);
 ---@param palyerId number
 ---@return table?
 lib.callback.register('king-jobs:server:getPlayerGang', function(src, palyerId)
-    ---@type table
-    local player = Ox.GetPlayer(palyerId or src); --[[@as OxPlayer]]
+    local player = Ox.GetPlayer(palyerId or src);
     if not player then
         return nil;
     end
@@ -27,7 +25,7 @@ end);
 ---@return nil
 AddEventHandler('ox:playerLoaded', function(src, _, charid)
     ---@type table
-    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
+    local player = Ox.GetPlayer(src);
     if not player then
         return;
     end
@@ -56,8 +54,7 @@ end);
 ---@param charid number
 ---@return nil
 AddEventHandler('ox:playerLogout', function(src, _, charid)
-    ---@type table
-    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
+    local player = Ox.GetPlayer(src);
     if not player then
         return;
     end

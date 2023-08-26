@@ -1,11 +1,11 @@
 ---@param amount number
----@param charid number?
-local setSalary = function(amount, charid)
-    if source and not charid then
-        charid = Ox.GetPlayer(source).charid;
+---@param charId number?
+local setSalary = function(amount, charId)
+    if source and not charId then
+        charId = Ox.GetPlayer(source).charId;
     end
-    local query = 'UPDATE `character_jobs` SET `salary` = ? WHERE `charid` = ?';
-    MySQL.query(query, {amount, charid});
+    local query = 'UPDATE `character_jobs` SET `salary` = ? WHERE `charId` = ?';
+    MySQL.query(query, {amount, charId});
 end
 exports('SetSalary', setSalary);
 RegisterServerEvent('king-jobs:server:setSalary', setSalary);
@@ -13,10 +13,10 @@ RegisterServerEvent('king-jobs:server:setSalary', setSalary);
 ---@param src number
 ---@return number?
 local getSalary = function(src)
-    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
-    local charid = player.charid;
-    local query = 'SELECT `salary` FROM `character_jobs` WHERE `charid` = ?';
-    local data = MySQL.query.await(query, {charid});
+    local player = Ox.GetPlayer(src);
+    local charId = player?.charId;
+    local query = 'SELECT `salary` FROM `character_jobs` WHERE `charId` = ?';
+    local data = MySQL.query.await(query, {charId});
     if not data or not data?[1] then
         return;
     end
@@ -47,6 +47,6 @@ lib.addCommand('setsalary',  {
     restricted = 'group.admin'
 }, function(_, args)
     local player = Ox.GetPlayer(args.playerId);
-    local charid = player.charid;
-    setSalary(args.amount, charid);
+    local charId = player?.charId;
+    setSalary(args.amount, charId);
 end);
