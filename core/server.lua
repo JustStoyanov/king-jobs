@@ -21,9 +21,9 @@ lib.callback.register('king-jobs:server:getPlayerGang', function(src, palyerId)
 end);
 
 ---@param src number
----@param charid number
+---@param charId number
 ---@return nil
-AddEventHandler('ox:playerLoaded', function(src, _, charid)
+AddEventHandler('ox:playerLoaded', function(src, _, charId)
     ---@type table
     local player = Ox.GetPlayer(src);
     if not player then
@@ -32,9 +32,9 @@ AddEventHandler('ox:playerLoaded', function(src, _, charid)
     ---@type table?
     local data = MySQL.single.await([[
     SELECT `job`, `job_grade`, `gang`, `gang_grade` FROM `character_jobs` WHERE
-        `charid` = ?
+        `charId` = ?
     ]], {
-        charid
+        charId
     });
     ---@type table
     local job = {
@@ -51,28 +51,28 @@ AddEventHandler('ox:playerLoaded', function(src, _, charid)
 end);
 
 ---@param src number
----@param charid number
+---@param charId number
 ---@return nil
-AddEventHandler('ox:playerLogout', function(src, _, charid)
+AddEventHandler('ox:playerLogout', function(src, _, charId)
     local player = Ox.GetPlayer(src);
     if not player then
         return;
     end
     local job, gang = player.get('job'), player.get('gang');
-    MySQL.query('SELECT * FROM `character_jobs` WHERE `charid` = ?', {
-        charid
+    MySQL.query('SELECT * FROM `character_jobs` WHERE `charId` = ?', {
+        charId
     }, function(data)
         local elsE = function()
             MySQL.insert([[
                 INSERT INTO `character_jobs` (
-                    `charid`,
+                    `charId`,
                     `job`,
                     `job_grade`,
                     `gang`,
                     `gang_grade`
                 ) VALUES (?, ?, ?, ?, ?)
             ]], {
-                charid, job.name, job.grade, gang.name, gang.grade
+                charId, job.name, job.grade, gang.name, gang.grade
             });
         end
 
@@ -84,9 +84,9 @@ AddEventHandler('ox:playerLogout', function(src, _, charid)
                     `job_grade` = ?,
                     `gang` = ?,
                     `gang_grade` = ?
-                    WHERE `charid` = ?
+                    WHERE `charId` = ?
                 ]], {
-                    job.name, job.grade, gang.name, gang.grade, charid
+                    job.name, job.grade, gang.name, gang.grade, charId
                 });
             else
                 elsE();

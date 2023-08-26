@@ -14,7 +14,7 @@ lib.callback.register('king-jobs:server:getJobXP', function(src, job, charId)
         end
     end
     -- Experience Getting --
-    local result = MySQL.query.await('SELECT * FROM job_experience WHERE charid = ? AND job = ?', {
+    local result = MySQL.query.await('SELECT * FROM job_experience WHERE charId = ? AND job = ?', {
         charId,
         job
     });
@@ -36,18 +36,18 @@ RegisterServerEvent('king-jobs:server:setJobXP', function(job, xp, charId)
         end
     end
     -- Experience Adding --
-    MySQL.query('SELECT * FROM job_experience WHERE charid = ? AND job = ?', {
+    MySQL.query('SELECT * FROM job_experience WHERE charId = ? AND job = ?', {
         charId,
         job
     }, function(result)
         if result?[1] then
-            MySQL.query('UPDATE job_experience SET experience = ? WHERE charid = ? AND job = ?', {
+            MySQL.query('UPDATE job_experience SET experience = ? WHERE charId = ? AND job = ?', {
                 xp,
                 charId,
                 job
             });
         else
-            MySQL.query('INSERT INTO job_experience (charid, job, experience) VALUES (?, ?, ?)', {
+            MySQL.query('INSERT INTO job_experience (charId, job, experience) VALUES (?, ?, ?)', {
                 charId,
                 job,
                 xp
