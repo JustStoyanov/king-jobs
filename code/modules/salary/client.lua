@@ -40,20 +40,45 @@ local createTarget = function(data)
     });
 end
 
+---@param data table
+local createPed = function(data)
+    local model, c = joaat(data.model), data.coords;
+    local x, y, z, r = c.x, c.y, c.z, data.rotation;
+    -- Ped Creation --
+    lib.requestModel(model);
+    local ped = CreatePed(4, model, x, y, z, r, data.net or false, true);
+    SetBlockingOfNonTemporaryEvents(ped, true);
+    SetPedDiesWhenInjured(ped, false);
+    SetPedCanPlayAmbientAnims(ped, true);
+    SetPedCanRagdollFromPlayerImpact(ped, false);
+    SetEntityInvincible(ped, true);
+    if data.freeze or data.freeze == nil then
+        FreezeEntityPosition(ped, true);
+    end
+    SetModelAsNoLongerNeeded(model);
+    -- Metatable --
+    local pedTable = setmetatable({}, {__call = ped});
+    pedTable.ped = ped;
+    pedTable.remove = function(self)
+        DeletePed(self.ped);
+    end
+    return pedTable;
+end
+
 CreateThread(function()
     -- Ped/Zone Handling --
     for i = 1, #Config.SalaryPeds do
         local pedData = Config.SalaryPeds[i];
         -- Ped Handling --
         if pedData.ped then
-            mlib.ped({
+            createPed({
                 coords = pedData.ped.location,
                 rotation = pedData.ped.heading,
                 model = pedData.ped.model
             });
         end if pedData.peds then
             for j = 1, #pedData.peds do
-                mlib.ped({
+                createPed({
                     coords = pedData.peds[j].location,
                     rotation = pedData.peds[j].heading,
                     model = pedData.peds[j].model
