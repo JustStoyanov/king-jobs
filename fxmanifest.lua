@@ -25,9 +25,10 @@ shared_scripts {
     '@ox_lib/init.lua',
     '@mst-lib/import.lua',
 
-    'core/shared.lua',
     'config/config.lua',
     'config/jobs.lua',
-    'config/gangs.lua'
+    'config/gangs.lua',
+
+    'core/shared.lua'
 };
 provides {'mst-experience'};
