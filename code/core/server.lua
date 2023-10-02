@@ -39,12 +39,12 @@ AddEventHandler('ox:playerLoaded', function(src, _, charId)
         charId
     });
 
-    player:set('job', {
+    player.set('job', {
         name = data?.job or 'unemployed',
         grade = data?.job_grade or 0
     }, true);
 
-    player:set('gang', {
+    player.set('gang', {
         name = data?.gang or nil,
         grade = data?.gang_grade or 0
     }, true);

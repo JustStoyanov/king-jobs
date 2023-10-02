@@ -1,21 +1,21 @@
 ---@diagnostic disable: missing-parameter, param-type-mismatch
 
----@param job string
----@param job_grade number
----@return string
-local formateJobMSG = function(job, job_grade)
-    local msg = 'You are unemployed!';
-    if job and job ~= 'unemployed' then
-        local cfgJobs = Config.Jobs[job];
-        if not cfgJobs?.label then
+---@param data table
+local formateGroupMSG = function(data)
+    local msg = '';
+    if data.group then
+        local cfgGroups = Config[data.type == 'job' and 'Jobs' or 'Gangs'][data.group];
+        if not cfgGroups?.label then
             return msg;
         end
-        msg = ('You are working as: %s'):format(cfgJobs.label);
-        if job_grade then
-            if not cfgJobs?.grades?[job_grade]?.label then
+        msg = ('%s: %s'):format(data.type == 'job' and 'You are working as' or 'You are part of', cfgGroups.label);
+        if data.grade then
+            local grade = cfgGroups?.grades?[data.grade];
+            local grade_txt = data.type == 'job' and grade.label or grade;
+            if not grade_txt then
                 return msg;
             end
-            msg = ('%s - %s'):format(msg, cfgJobs.grades[job_grade].label);
+            msg = ('%s - %s'):format(msg, grade_txt);
         end
     end
     return msg;
@@ -27,7 +27,16 @@ lib.addCommand('myjob', {
 }, function(src)
     local player = Ox.GetPlayer(src);
     local job, grade_id = player.get('job').name, player.get('job').grade;
-    local msg = formateJobMSG(job, grade_id);
+    -- Message Formating --
+    local msg = 'You are unemployed!';
+    if job ~= Config.Unemployed then
+        msg = formateGroupMSG({
+            type = 'job',
+            group = job,
+            grade = grade_id
+        });
+    end
+    -- Notification --
     lib.notify(src, {
         title = 'Notification',
         description = msg,
@@ -36,34 +45,22 @@ lib.addCommand('myjob', {
     });
 end);
 
----@param gang string
----@param gang_grade number
-local formateGangMSG = function(gang, gang_grade)
-    local msg = 'You are not in a gang!';
-    if gang then
-        local cfgGangs = Config.Gangs[gang];
-        if not cfgGangs?.label then
-            goto skip
-        end
-        msg = ('Gang: %s'):format(cfgGangs.label);
-        if gang_grade then
-            if not cfgGangs?.grades?[gang_grade] then
-                goto skip
-            end
-            msg = ('%s - %s'):format(msg, cfgGangs.grades[gang_grade]);
-        end
-    end
-    ::skip::
-    return msg;
-end
-
 lib.addCommand('mygang', {
     help = 'Check your gang',
     params = {}
 }, function(src)
-    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
+    local player = Ox.GetPlayer(src);
     local gang, gang_grade = player.get('gang').name, player.get('gang').grade;
-    local msg = formateGangMSG(gang, gang_grade);
+    -- Message Formating --
+    local msg = 'You are not in a gang!';
+    if gang then
+        msg = formateGroupMSG({
+            type = 'gang',
+            group = gang,
+            grade = gang_grade
+        });
+    end
+    -- Notification --
     lib.notify(src, {
         title = 'Notification',
         description = msg,
