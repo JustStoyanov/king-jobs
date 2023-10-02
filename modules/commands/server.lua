@@ -1,3 +1,5 @@
+---@diagnostic disable: missing-parameter, param-type-mismatch
+
 ---@param job string
 ---@param job_grade number
 ---@return string
@@ -8,12 +10,12 @@ local formateJobMSG = function(job, job_grade)
         if not cfgJobs?.label then
             return msg;
         end
-        msg = 'You are working as: '..cfgJobs.label;
+        msg = ('You are working as: %s'):format(cfgJobs.label);
         if job_grade then
             if not cfgJobs?.grades?[job_grade]?.label then
                 return msg;
             end
-            msg = msg..' - '..cfgJobs.grades[job_grade].label;
+            msg = ('%s - %s'):format(msg, cfgJobs.grades[job_grade].label);
         end
     end
     return msg;
@@ -23,11 +25,10 @@ lib.addCommand('myjob', {
     help = 'Check your jobs',
     params = {}
 }, function(src)
-    local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
-    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
+    local player = Ox.GetPlayer(src);
     local job, grade_id = player.get('job').name, player.get('job').grade;
     local msg = formateJobMSG(job, grade_id);
-    TriggerClientEvent('ox_lib:notify', src, {
+    lib.notify(src, {
         title = 'Notification',
         description = msg,
         duration = 5000,
@@ -44,12 +45,12 @@ local formateGangMSG = function(gang, gang_grade)
         if not cfgGangs?.label then
             goto skip
         end
-        msg = 'Gang: '..cfgGangs.label;
+        msg = ('Gang: %s'):format(cfgGangs.label);
         if gang_grade then
             if not cfgGangs?.grades?[gang_grade] then
                 goto skip
             end
-            msg = msg..' - '..cfgGangs.grades[gang_grade];
+            msg = ('%s - %s'):format(msg, cfgGangs.grades[gang_grade]);
         end
     end
     ::skip::
@@ -61,10 +62,9 @@ lib.addCommand('mygang', {
     params = {}
 }, function(src)
     local player = Ox.GetPlayer(src); --[[@as OxPlayer]]
-    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
     local gang, gang_grade = player.get('gang').name, player.get('gang').grade;
     local msg = formateGangMSG(gang, gang_grade);
-    TriggerClientEvent('ox_lib:notify', src, {
+    lib.notify(src, {
         title = 'Notification',
         description = msg,
         duration = 5000,
@@ -87,15 +87,13 @@ local changeJob = function(src, job, grade)
             name = Config.Unemployed,
             grade = 0
         };
-        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
         player.set('job', jobData, true);
         return;
     end
     -- Gang Prevention --
-    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
     if player.get('gang').name then
         if not Config.Jobs[job].metadata.canBeInGang then
-            TriggerClientEvent('ox_lib:notify', src, {
+            lib.notify(src, {
                 title = 'Notification',
                 description = 'You can\'t work this job if you are in a gang!',
                 duration = 5000,
@@ -119,7 +117,6 @@ local changeJob = function(src, job, grade)
             name = job,
             grade = grade
         };
-        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
         player.set('job', jobData, true);
         TriggerClientEvent('king-jobs:jobUpdate', src, job, grade);
     end
@@ -184,14 +181,12 @@ local changeGang = function(src, gang, grade)
             name = nil,
             grade = 0
         };
-        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
         player.set('gang', gangData, true);
         return;
     end
-    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
     local job = player.get('job').name;
     if not Config.Jobs[job].metadata.canBeInGang then
-        TriggerClientEvent('ox_lib:notify', src, {
+        lib.notify(src, {
             title = 'Notification',
             description = 'You can\'t be in a gang with this job!',
             duration = 5000,
@@ -209,13 +204,10 @@ local changeGang = function(src, gang, grade)
     end
     -- Gang Changing --
     if gang and src and player then
-        ---@type table
-        local gangData = {
+        player.set('gang', {
             name = gang,
             grade = grade
-        };
-        ---@diagnostic disable-next-line: unused-function, param-type-mismatch
-        player.set('gang', gangData, true);
+        }, true);
         TriggerClientEvent('king-jobs:gangUpdate', src, gang, grade);
     end
 end
@@ -224,12 +216,8 @@ exports('ChangeGang', changeGang);
 ---@param gang string?
 ---@param grade number?
 RegisterNetEvent('king-jobs:server:changeGang', function(gang, grade)
-    ---@type number
-    ---@diagnostic disable-next-line: assign-type-mismatch
     local src = source;
-    if not source then
-        return;
-    end if type(source) ~= 'number' then
+    if not src or type(src) ~= 'number' then
         return;
     end
     changeGang(src, gang, grade);
@@ -258,8 +246,5 @@ lib.addCommand('changegang', {
     },
     restricted = 'group.admin'
 }, function(src, args)
-    if not src then
-        return;
-    end
     changeGang(args.playerId, args.gangName, args.gangGrade)
 end);
