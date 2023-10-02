@@ -24,7 +24,7 @@ end);
 ---@param job string
 ---@param xp number
 ---@param charId number | string | nil
-RegisterServerEvent('king-jobs:server:setJobXP', function(job, xp, charId)
+RegisterNetEvent('king-jobs:server:setJobXP', function(job, xp, charId)
     if not job or not xp then
         return;
     end

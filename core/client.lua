@@ -1,11 +1,10 @@
 ---@param playerId number?
 ---@return table?
 local getPlayerJob = function(playerId)
-    if not playerId then
+    if not playerId or playerId == cache.serverId then
         return player.job;
     end
-    local name = 'king-jobs:server:getPlayerJob';
-    return lib.callback.await(name, false, playerId);
+    return lib.callback.await('king-jobs:server:getPlayerJob', false, playerId);
 end
 exports('getPlayerJob', getPlayerJob);
 
@@ -20,11 +19,10 @@ end);
 ---@param playerId number?
 ---@return table?
 local getPlayerGang = function(playerId)
-    if not playerId then
+    if not playerId or playerId == cache.serverId then
         return player.gang;
     end
-    local name = 'king-jobs:server:getPlayerGang';
-    return lib.callback.await(name, false, playerId);
+    return lib.callback.await('king-jobs:server:getPlayerGang', false, playerId);
 end
 exports('getPlayerGang', getPlayerGang);
 

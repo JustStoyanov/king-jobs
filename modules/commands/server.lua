@@ -128,7 +128,7 @@ exports('ChangeJob', changeJob);
 
 ---@param job string?
 ---@param grade number?
-RegisterServerEvent('king-jobs:server:changeJob', function(job, grade)
+RegisterNetEvent('king-jobs:server:changeJob', function(job, grade)
     ---@type number
     ---@diagnostic disable-next-line: assign-type-mismatch
     local src = source;
@@ -223,7 +223,7 @@ exports('ChangeGang', changeGang);
 
 ---@param gang string?
 ---@param grade number?
-RegisterServerEvent('king-jobs:server:changeGang', function(gang, grade)
+RegisterNetEvent('king-jobs:server:changeGang', function(gang, grade)
     ---@type number
     ---@diagnostic disable-next-line: assign-type-mismatch
     local src = source;

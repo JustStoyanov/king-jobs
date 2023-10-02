@@ -1,3 +1,5 @@
+---@diagnostic disable: missing-parameter, param-type-mismatch
+
 ---@param src number
 ---@param palyerId number
 ---@return table?
@@ -36,18 +38,16 @@ AddEventHandler('ox:playerLoaded', function(src, _, charId)
     ]], {
         charId
     });
-    ---@type table
-    local job = {
+
+    player:set('job', {
         name = data?.job or 'unemployed',
         grade = data?.job_grade or 0
-    };
-    player.set('job', job, true);
-    ---@type table
-    local gang = {
+    }, true);
+
+    player:set('gang', {
         name = data?.gang or nil,
         grade = data?.gang_grade or 0
-    };
-    player.set('gang', gang, true);
+    }, true);
 end);
 
 ---@param src number

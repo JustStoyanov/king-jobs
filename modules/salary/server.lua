@@ -8,7 +8,7 @@ local setSalary = function(amount, charId)
     MySQL.query(query, {amount, charId});
 end
 exports('SetSalary', setSalary);
-RegisterServerEvent('king-jobs:server:setSalary', setSalary);
+RegisterNetEvent('king-jobs:server:setSalary', setSalary);
 
 ---@param src number
 ---@return number?
@@ -26,7 +26,7 @@ exports('GetSalary', getSalary);
 lib.callback.register('king-jobs:server:getSalary', getSalary);
 
 ---@param amount number
-RegisterServerEvent('king-jobs:server:addMoneyItem', function(amount)
+RegisterNetEvent('king-jobs:server:addMoneyItem', function(amount)
     exports['ox_inventory']:AddItem(source, 'cash', amount);
 end);
 
