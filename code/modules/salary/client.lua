@@ -174,7 +174,7 @@ CreateThread(function()
                         icon = 'fas fa-dollar-sign',
                         duration = 7500
                     });
-                    TriggerServerEvent('king-jobs:server:addMoneyItem', amount);
+                    TriggerServerEvent('king-jobs:server:receiveSalary', amount);
                 end
             },
             {
@@ -201,7 +201,7 @@ CreateThread(function()
                             icon = 'fas fa-dollar-sign',
                             duration = 7500
                         });
-                        TriggerServerEvent('king-jobs:server:addMoneyItem', salary);
+                        TriggerServerEvent('king-jobs:server:receiveSalary', salary);
                     end);
                 end
             }

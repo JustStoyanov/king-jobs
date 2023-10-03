@@ -41,7 +41,7 @@ local myGroup = function(src, type)
     lib.notify(src, {
         title = 'Notification',
         description = msg,
-        duration = 5000,
+        duration = 7500,
         type = 'info'
     });
 end
@@ -87,7 +87,7 @@ local changeGroup = function(src, groupType, group, grade)
                 lib.notify(src, {
                     title = 'Notification',
                     description = 'You can\'t work this job if you are in a gang!',
-                    duration = 5000,
+                    duration = 7500,
                     type = 'error'
                 });
                 return;
@@ -99,7 +99,7 @@ local changeGroup = function(src, groupType, group, grade)
             lib.notify(src, {
                 title = 'Notification',
                 description = 'You can\'t be in a gang with this job!',
-                duration = 5000,
+                duration = 7500,
                 type = 'error'
             });
             return;
