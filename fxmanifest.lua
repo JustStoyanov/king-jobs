@@ -5,7 +5,7 @@ use_experimental_fxv2_oal 'yes';
 
 author 'gadget2';
 description 'Job system for FiveM [ox_core]';
-version '1.0.4';
+version '1.0.5';
 
 client_scripts {
     '@ox_core/imports/client.lua',
