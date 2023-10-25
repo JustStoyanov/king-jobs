@@ -115,11 +115,17 @@ local changeGroup = function(src, groupType, group, grade)
     end
     -- Group Changing --
     if group and src and player then
+        -- Bug Prevention --
+        local oldGroup, oldGrade = player.get(groupType).name, player.get(groupType).grade;
+        if oldGroup == group and oldGrade == grade then
+            return;
+        end
+        -- Group Changing --
         player.set(groupType, {
             name = group,
             grade = grade
         }, true);
-        TriggerClientEvent(('king-jobs:%sUpdate'):format(groupType), src, group, grade);
+        TriggerClientEvent(('king-jobs:%sUpdate'):format(groupType), src, group, grade, oldGroup, oldGrade);
     end
 end
 

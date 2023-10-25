@@ -10,6 +10,16 @@ Config.Jobs = {
         salary = 30
     },
 
+    ['fruitpicker'] = {
+        label = 'Fruit Picker',
+        metadata = {
+            government = true,
+            canBeInGang = true
+        },
+        grades = false,
+        salary = 50
+    },
+
     ['kcmd'] = {
         label = 'KCMD',
         metadata = {
