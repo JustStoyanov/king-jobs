@@ -125,7 +125,7 @@ local changeGroup = function(src, groupType, group, grade)
             name = group,
             grade = grade
         }, true);
-        TriggerClientEvent(('king-jobs:%sUpdate'):format(groupType), src, group, grade, oldGroup, oldGrade);
+        TriggerClientEvent(('king-jobs:client:%sUpdate'):format(groupType), src, group, grade, oldGroup, oldGrade);
     end
 end
 

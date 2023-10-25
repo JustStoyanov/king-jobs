@@ -2,6 +2,7 @@ Config = {};
 
 -- Configuration --
 
+Config.Debug = false;
 Config.SalaryReceiveTime = 30; -- In minutes
 Config.SalaryPeds = {
     [1] = {
