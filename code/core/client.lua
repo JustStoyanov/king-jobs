@@ -12,6 +12,7 @@ local setDuty = function(onDuty)
     end
     state:set('onDuty', onDuty, false);
 end
+exports('setDuty', setDuty);
 
 -- Update Handler --
 
